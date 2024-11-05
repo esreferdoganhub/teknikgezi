@@ -1,3 +1,4 @@
+/* styles.css */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -87,6 +88,8 @@ button:hover {
     opacity: 0.7;
     pointer-events: none;
     transition: opacity 0.3s ease;
+    text-decoration: line-through;
+    color: red;
 }
 
 .submitted input[type="checkbox"] {
@@ -153,10 +156,4 @@ button:hover {
     #submittedQuestionsContainer {
         padding: 15px;
     }
-}
-
-/* Optional: Customize Reset Button */
-.btn-danger {
-    /* Example: Increase button padding */
-    padding: 10px 20px;
-}
+};

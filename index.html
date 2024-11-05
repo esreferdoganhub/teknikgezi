@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -121,7 +122,7 @@
                     </label>
                     <label>
                         <input type="checkbox" name="questions" value="Bakım personelinin eğitimi nasıl sağlanıyor?">
-                        • Bakım personelinin eğitimi nasıl sağlanıyor?
+                        • Bakım personelinin eğitimi nasıl sa��lanıyor?
                     </label>
                 </div>
 
@@ -182,17 +183,19 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-success">Soruları Gönder</button>
-                <!-- Reset Questions Button -->
-                <button type="button" class="btn btn-danger ms-2" onclick="resetQuestions()">Soruları Sıfırla</button>
+                <button type="submit" class="btn btn-primary">Soruları Kaydet</button>
             </form>
+            <!-- Add Reset Questions Button within Admin Controls -->
+            <div class="admin-controls">
+                <button id="resetBtn" class="btn btn-danger">Soruları Sıfırla</button>
+            </div>
         </div>
 
-        <!-- Submitted Questions Section (Visible to All Users) -->
-        <div id="submittedQuestionsContainer" class="mt-5">
+        <!-- Gönderilen Sorular Bölümü -->
+        <div id="submittedQuestionsContainer">
             <h2>Gönderilen Sorular</h2>
-            <ul id="submittedQuestionsList" class="list-group">
-                <!-- Submitted questions will be appended here -->
+            <ul id="submittedQuestionsList">
+                <!-- Gönderilen sorular buraya eklenecek -->
             </ul>
         </div>
     </div>

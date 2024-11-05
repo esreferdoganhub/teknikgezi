@@ -1,5 +1,6 @@
+// app.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, update, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, ref, update, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -26,42 +27,71 @@ function sanitizeKey(text) {
         .replace(/^_|_$/g, '');              // Trim leading/trailing '_'
 }
 
-// Listen for submitted questions and display in the submittedQuestionsList
-onValue(ref(db, 'submittedQuestions/'), (snapshot) => {
-    const submittedQuestions = snapshot.val() || {};
-    const submittedQuestionsList = document.getElementById('submittedQuestionsList');
-    submittedQuestionsList.innerHTML = ''; // Clear existing list
+// Gönderilen soruların önbelleği
+let submittedQuestionsCache = {};
 
-    Object.values(submittedQuestions).forEach(question => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.textContent = question.originalText;
-        submittedQuestionsList.appendChild(listItem);
+// Add reference to the submitted questions list element
+const submittedQuestionsList = document.getElementById('submittedQuestionsList');
+
+// 'submittedQuestions' verisindeki değişiklikleri dinleyin
+onValue(ref(db, 'submittedQuestions'), (snapshot) => {
+    const submittedQuestions = snapshot.val() || {};
+    submittedQuestionsCache = submittedQuestions; // Önbelleği güncelleyin
+
+    // Clear the submitted questions list
+    submittedQuestionsList.innerHTML = '';
+
+    // Update submitted questions list
+    Object.entries(submittedQuestions).forEach(([key, data]) => {
+        const li = document.createElement('li');
+        li.textContent = data.originalText || data;
+        submittedQuestionsList.appendChild(li);
     });
-});
 
-// Listen for submitted questions to update admin form
-onValue(ref(db, 'submittedQuestions/'), (snapshot) => {
-    const submittedQuestions = snapshot.val() || {};
+    const checkboxes = document.querySelectorAll('input[name="questions"]');
 
-    document.querySelectorAll('input[name="questions"]').forEach(checkbox => {
-        const safeKey = sanitizeKey(checkbox.value);
-        if (submittedQuestions[safeKey]) {
-            checkbox.disabled = true;
-            if (checkbox.parentElement) {
-                checkbox.parentElement.classList.add('submitted');
-                // Prevent adding multiple badges
+    // Reset all checkboxes first
+    checkboxes.forEach(checkbox => {
+        const listItem = checkbox.closest('li');
+        // Enable checkbox and remove submitted state
+        checkbox.disabled = false;
+        checkbox.checked = false;
+        checkbox.removeAttribute('disabled');
+        
+        // Remove submitted class
+        if (listItem) {
+            listItem.classList.remove('submitted');
+        }
+        
+        // Remove badge if exists
+        const badge = checkbox.parentElement.querySelector('.badge');
+        if (badge) {
+            badge.remove();
+        }
+    });
+
+    // Then process submitted questions
+    if (submittedQuestions) {
+        Object.entries(submittedQuestions).forEach(([key, data]) => {
+            const checkbox = document.querySelector(`input[value="${sanitizeKey(data.originalText || data)}"]`);
+            if (checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = true;
+
+                const listItem = checkbox.closest('li');
+                if (listItem) {
+                    listItem.classList.add('submitted');
+                }
+
                 if (!checkbox.parentElement.querySelector('.badge')) {
                     const badge = document.createElement('span');
                     badge.className = 'badge bg-success';
                     badge.textContent = 'Gönderildi';
                     checkbox.parentElement.appendChild(badge);
                 }
-            } else {
-                console.warn('Checkbox has no parent element:', checkbox);
             }
-        }
-    });
+        });
+    }
 });
 
 // Form submission handler (Admin Only)
@@ -84,6 +114,13 @@ document.getElementById('questionForm').addEventListener('submit', async functio
         const updates = {};
         selectedQuestions.forEach(checkbox => {
             const safeKey = sanitizeKey(checkbox.value);
+
+            // Eğer soru zaten gönderildiyse uyarı verme
+            if (submittedQuestionsCache && submittedQuestionsCache[safeKey]) {
+                alert(`"${checkbox.value}" sorusu zaten gönderildi.`);
+                return;
+            }
+
             updates[`submittedQuestions/${safeKey}`] = {
                 originalText: checkbox.value,
                 safeKey: safeKey,
@@ -117,38 +154,65 @@ document.getElementById('questionForm').addEventListener('submit', async functio
     }
 });
 
-// Reset Questions Function (Admin Only)
-window.resetQuestions = async function() {
+// Sıfırlama butonu için event listener
+document.getElementById('resetBtn').addEventListener('click', async function() {
     if (!auth.currentUser) {
-        alert('Bu işlemi yapmak için giriş yapmanız gerekiyor.');
+        alert('Lütfen önce giriş yapın');
         return;
     }
 
-    const confirmReset = confirm('Tüm gönderilen soruları sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz.');
-    if (!confirmReset) return;
+    if (!confirm('Tüm gönderilmiş soruları sıfırlamak istediğinizden emin misiniz?')) {
+        return;
+    }
 
     try {
-        // Remove all submitted questions from Firebase
-        await remove(ref(db, 'submittedQuestions/'));
-        alert('Tüm sorular başarıyla sıfırlandı.');
-
-        // Update UI: Enable all checkboxes and remove badges
+        // Clear Firebase data
+        await set(ref(db, 'submittedQuestions'), null);
+        
+        // Clear cache
+        submittedQuestionsCache = {};
+        
+        // Clear submitted questions list
+        submittedQuestionsList.innerHTML = '';
+        
+        // Reset UI elements
         document.querySelectorAll('input[name="questions"]').forEach(checkbox => {
+            // Enable checkbox
             checkbox.disabled = false;
-            if (checkbox.parentElement) {
-                checkbox.parentElement.classList.remove('submitted');
-                const badge = checkbox.parentElement.querySelector('.badge');
-                if (badge) {
-                    badge.remove();
-                }
+            checkbox.checked = false;
+            
+            // Remove submitted styling
+            const label = checkbox.closest('label');
+            if (label) {
+                label.style.textDecoration = 'none';
+                label.style.color = '';
+                label.style.opacity = '1';
+                label.style.pointerEvents = 'auto';
             }
+            
+            // Remove badge if exists
+            const badge = label?.querySelector('.badge');
+            if (badge) {
+                badge.remove();
+            }
+            
+            // Remove submitted class from parent elements
+            const listItem = checkbox.closest('li');
+            if (listItem) {
+                listItem.classList.remove('submitted');
+            }
+            
+            // Ensure the checkbox is clickable
+            checkbox.removeAttribute('disabled');
+            checkbox.style.cursor = 'pointer';
         });
 
+        alert('Sorular başarıyla sıfırlandı!');
     } catch (error) {
         console.error('Sıfırlama hatası:', error);
-        alert(`Hata: ${error.message}`);
+        alert('Soruları sıfırlarken bir hata oluştu: ' + error.message);
     }
-};
+});
 
 // Login function
 window.login = async function() {
@@ -181,12 +245,7 @@ window.logout = function() {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log('User is signed in:', user);
-        // Optionally verify the email here
-        if (user.email === 'your-admin-email@example.com') {
-            document.body.classList.add('admin');
-        } else {
-            document.body.classList.remove('admin');
-        }
+        document.body.classList.add('admin');
         document.getElementById('logoutBtn').style.display = 'inline-block';
     } else {
         console.log('User is signed out');
