@@ -1,4 +1,4 @@
-        * {
+* {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -73,6 +73,20 @@
 
         button:hover {
             background-color: #0056b3;
+        }
+
+        .highlighted {
+            background-color: #fff3cd !important;
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-controls {
+            display: none;
+        }
+
+        .admin .admin-controls {
+            display: inline-block;
+            margin-left: 10px;
         }
 
         @media (max-width: 768px) {

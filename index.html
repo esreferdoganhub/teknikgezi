@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teknik Gezi Soru Havuzu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
         .category {
             margin: 20px 0;
@@ -18,55 +20,66 @@
     </style>
 </head>
 <body>
-    <h1>Teknik Gezi Soru Havuzu</h1>
-    <form id="questionForm">
-        <div class="category">
-            <h2>1. Üretim Süreçleri ve Teknolojileri</h2>
-            <label><input type="checkbox" name="questions" value="MDF üretiminde kullanılan ana hammaddeler nelerdir?"> MDF üretiminde kullanılan ana hammaddeler nelerdir?</label>
-            <label><input type="checkbox" name="questions" value="Üretim hattında hangi otomasyon sistemleri ve sensörler kullanılıyor?"> Üretim hattında hangi otomasyon sistemleri ve sensörler kullanılıyor?</label>
+    <div class="container">
+        <!-- Admin Giriş Formu -->
+        <div id="loginForm" class="mb-4">
+            <h2>Admin Girişi</h2>
+            <input type="email" id="emailInput" placeholder="Email" class="form-control mb-2">
+            <input type="password" id="passwordInput" placeholder="Şifre" class="form-control mb-2">
+            <button onclick="login()" class="btn btn-primary">Giriş</button>
+            <button onclick="logout()" class="btn btn-secondary" id="logoutBtn" style="display:none;">Çıkış</button>
         </div>
 
-        <div class="category">
-            <h2>2. Enerji Verimliliği ve Yönetimi</h2>
-            <label><input type="checkbox" name="questions" value="Tesisin enerji tüketimini azaltmak için hangi önlemler alınıyor?"> Tesisin enerji tüketimini azaltmak için hangi önlemler alınıyor?</label>
-        </div>
+        <h1>Teknik Gezi Soru Havuzu</h1>
+        <form id="questionForm">
+            <div class="category">
+                <h2>1. Üretim Süreçleri ve Teknolojileri</h2>
+                <label><input type="checkbox" name="questions" value="MDF üretiminde kullanılan ana hammaddeler nelerdir?"> MDF üretiminde kullanılan ana hammaddeler nelerdir?</label>
+                <label><input type="checkbox" name="questions" value="Üretim hattında hangi otomasyon sistemleri ve sensörler kullanılıyor?"> Üretim hattında hangi otomasyon sistemleri ve sensörler kullanılıyor?</label>
+            </div>
 
-        <div class="category">
-            <h2>3. Yenilenebilir Enerji Uygulamaları</h2>
-            <label><input type="checkbox" name="questions" value="Güneş enerjisi santrali tesisin enerji ihtiyacının ne kadarını karşılıyor?"> Güneş enerjisi santrali tesisin enerji ihtiyacının ne kadarını karşılıyor?</label>
-            <label><input type="checkbox" name="questions" value="Güneş enerjisi sisteminin kurulumu ve entegrasyonu nasıl gerçekleştirildi?"> Güneş enerjisi sisteminin kurulumu ve entegrasyonu nasıl gerçekleştirildi?</label>
-            <label><input type="checkbox" name="questions" value="Yenilenebilir enerji kaynaklarının kullanımıyla elde edilen tasarruflar nelerdir?"> Yenilenebilir enerji kaynaklarının kullanımıyla elde edilen tasarruflar nelerdir?</label>
-        </div>
+            <div class="category">
+                <h2>2. Enerji Verimliliği ve Yönetimi</h2>
+                <label><input type="checkbox" name="questions" value="Tesisin enerji tüketimini azaltmak için hangi önlemler alınıyor?"> Tesisin enerji tüketimini azaltmak için hangi önlemler alınıyor?</label>
+            </div>
 
-        <div class="category">
-            <h2>4. Elektrik Motorları ve Sürücü Sistemleri</h2>
-            <label><input type="checkbox" name="questions" value="Motorların bakım ve arıza teşhis süreçleri nasıl yönetiliyor?"> Motorların bakım ve arıza teşhis süreçleri nasıl yönetiliyor?</label>
-        </div>
+            <div class="category">
+                <h2>3. Yenilenebilir Enerji Uygulamaları</h2>
+                <label><input type="checkbox" name="questions" value="Güneş enerjisi santrali tesisin enerji ihtiyacının ne kadarını karşılıyor?"> Güneş enerjisi santrali tesisin enerji ihtiyacının ne kadarını karşılıyor?</label>
+                <label><input type="checkbox" name="questions" value="Güneş enerjisi sisteminin kurulumu ve entegrasyonu nasıl gerçekleştirildi?"> Güneş enerjisi sisteminin kurulumu ve entegrasyonu nasıl gerçekleştirildi?</label>
+                <label><input type="checkbox" name="questions" value="Yenilenebilir enerji kaynaklarının kullanımıyla elde edilen tasarruflar nelerdir?"> Yenilenebilir enerji kaynaklarının kullanımıyla elde edilen tasarruflar nelerdir?</label>
+            </div>
 
-        <div class="category">
-            <h2>5. Endüstriyel Bakım ve Arıza Teşhis Sistemleri</h2>
-            <label><input type="checkbox" name="questions" value="Arıza teşhisinde hangi teknolojiler ve yöntemler kullanılıyor?"> Arıza teşhisinde hangi teknolojiler ve yöntemler kullanılıyor?</label>
-            <label><input type="checkbox" name="questions" value="Bakım personelinin eğitimi nasıl sağlanıyor?"> Bakım personelinin eğitimi nasıl sağlanıyor?</label>
-        </div>
+            <div class="category">
+                <h2>4. Elektrik Motorları ve Sürücü Sistemleri</h2>
+                <label><input type="checkbox" name="questions" value="Motorların bakım ve arıza teşhis süreçleri nasıl yönetiliyor?"> Motorların bakım ve arıza teşhis süreçleri nasıl yönetiliyor?</label>
+            </div>
 
-        <div class="category">
-            <h2>6. Şirket Kültürü ve İşe Alım Kriterleri</h2>
-            <label><input type="checkbox" name="questions" value="Kastamonu Entegre'de staj ve iş başvuruları için aranan temel nitelikler nelerdir?"> Kastamonu Entegre'de staj ve iş başvuruları için aranan temel nitelikler nelerdir?</label>
-            <label><input type="checkbox" name="questions" value="Şirket kültürüne uyum sağlama açısından adaylarda hangi kişisel özellikler ve yetkinlikler ön planda tutulmaktadır?"> Şirket kültürüne uyum sağlama açısından adaylarda hangi kişisel özellikler ve yetkinlikler ön planda tutulmaktadır?</label>
-            <label><input type="checkbox" name="questions" value="Staj ve işyeri eğitimi programlarının süresi ve içeriği nasıldır?"> Staj ve işyeri eğitimi programlarının süresi ve içeriği nasıldır?</label>
-        </div>
+            <div class="category">
+                <h2>5. Endüstriyel Bakım ve Arıza Teşhis Sistemleri</h2>
+                <label><input type="checkbox" name="questions" value="Arıza teşhisinde hangi teknolojiler ve yöntemler kullanılıyor?"> Arıza teşhisinde hangi teknolojiler ve yöntemler kullanılıyor?</label>
+                <label><input type="checkbox" name="questions" value="Bakım personelinin eğitimi nasıl sağlanıyor?"> Bakım personelinin eğitimi nasıl sağlanıyor?</label>
+            </div>
 
-        <div class="category">
-            <h2>7. PLC ve Elektromekanik Kumanda Sistemleri</h2>
-            <label><input type="checkbox" name="questions" value="PLC'nin temel işlevleri ve endüstrideki kullanım alanları nelerdir?"> PLC'nin temel işlevleri ve endüstrideki kullanım alanları nelerdir?</label>
-            <label><input type="checkbox" name="questions" value="PLC'lerin otomatik kontrol sistemlerine göre avantajları ve dezavantajları nelerdir?"> PLC'lerin otomatik kontrol sistemlerine göre avantajları ve dezavantajları nelerdir?</label>
-            <label><input type="checkbox" name="questions" value="PLC tabanlı sistemlerde sık karşılaşılan arızalar nelerdir ve nasıl tespit edilirler?"> PLC tabanlı sistemlerde sık karşılaşılan arızalar nelerdir ve nasıl tespit edilirler?</label>
-            <label><input type="checkbox" name="questions" value="Elektro mekanik kumanda ve PLC arasında negibi farklar vardır?"> Elektro mekanik kumanda ve PLC arasında negibi farklar vardır?</label>
-            <label><input type="checkbox" name="questions" value="Bu alanda başarılı olmak için kazanmamız gereken teknik beceriler nelerdir?"> Bu alanda başarılı olmak için kazanmamız gereken teknik beceriler nelerdir?</label>
-        </div>
+            <div class="category">
+                <h2>6. Şirket Kültürü ve İşe Alım Kriterleri</h2>
+                <label><input type="checkbox" name="questions" value="Kastamonu Entegre'de staj ve iş başvuruları için aranan temel nitelikler nelerdir?"> Kastamonu Entegre'de staj ve iş başvuruları için aranan temel nitelikler nelerdir?</label>
+                <label><input type="checkbox" name="questions" value="Şirket kültürüne uyum sağlama açısından adaylarda hangi kişisel özellikler ve yetkinlikler ön planda tutulmaktadır?"> Şirket kültürüne uyum sağlama açısından adaylarda hangi kişisel özellikler ve yetkinlikler ön planda tutulmaktadır?</label>
+                <label><input type="checkbox" name="questions" value="Staj ve işyeri eğitimi programlarının süresi ve içeriği nasıldır?"> Staj ve işyeri eğitimi programlarının süresi ve içeriği nasıldır?</label>
+            </div>
 
-        <button type="submit" style="margin: 20px 0; padding: 10px 20px;">Seçilen Soruları Gönder</button>
-    </form>
+            <div class="category">
+                <h2>7. PLC ve Elektromekanik Kumanda Sistemleri</h2>
+                <label><input type="checkbox" name="questions" value="PLC'nin temel işlevleri ve endüstrideki kullanım alanları nelerdir?"> PLC'nin temel işlevleri ve endüstrideki kullanım alanları nelerdir?</label>
+                <label><input type="checkbox" name="questions" value="PLC'lerin otomatik kontrol sistemlerine göre avantajları ve dezavantajları nelerdir?"> PLC'lerin otomatik kontrol sistemlerine göre avantajları ve dezavantajları nelerdir?</label>
+                <label><input type="checkbox" name="questions" value="PLC tabanlı sistemlerde sık karşılaşılan arızalar nelerdir ve nasıl tespit edilirler?"> PLC tabanlı sistemlerde sık karşılaşılan arızalar nelerdir ve nasıl tespit edilirler?</label>
+                <label><input type="checkbox" name="questions" value="Elektro mekanik kumanda ve PLC arasında negibi farklar vardır?"> Elektro mekanik kumanda ve PLC arasında negibi farklar vardır?</label>
+                <label><input type="checkbox" name="questions" value="Bu alanda başarılı olmak için kazanmamız gereken teknik beceriler nelerdir?"> Bu alanda başarılı olmak için kazanmamız gereken teknik beceriler nelerdir?</label>
+            </div>
+
+            <button type="submit" style="margin: 20px 0; padding: 10px 20px;">Seçilen Soruları Gönder</button>
+        </form>
+    </div>
 
     <script type="module" src="app.js"></script>
 </body>
