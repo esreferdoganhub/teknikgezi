@@ -33,66 +33,45 @@ let submittedQuestionsCache = {};
 // Add reference to the submitted questions list element
 const submittedQuestionsList = document.getElementById('submittedQuestionsList');
 
-// 'submittedQuestions' verisindeki değişiklikleri dinleyin
+// submittedQuestions listener'ını güncelleyin
 onValue(ref(db, 'submittedQuestions'), (snapshot) => {
     const submittedQuestions = snapshot.val() || {};
-    submittedQuestionsCache = submittedQuestions; // Önbelleği güncelleyin
+    submittedQuestionsCache = submittedQuestions;
 
-    // Clear the submitted questions list
+    // Önce listeyi temizle
     submittedQuestionsList.innerHTML = '';
 
-    // Update submitted questions list
+    // Gönderilen soruları göster
     Object.entries(submittedQuestions).forEach(([key, data]) => {
         const li = document.createElement('li');
         li.textContent = data.originalText || data;
         submittedQuestionsList.appendChild(li);
-    });
 
-    const checkboxes = document.querySelectorAll('input[name="questions"]');
-
-    // Reset all checkboxes first
-    checkboxes.forEach(checkbox => {
-        const listItem = checkbox.closest('li');
-        // Enable checkbox and remove submitted state
-        checkbox.disabled = false;
-        checkbox.checked = false;
-        checkbox.removeAttribute('disabled');
-        
-        // Remove submitted class
-        if (listItem) {
-            listItem.classList.remove('submitted');
-        }
-        
-        // Remove badge if exists
-        const badge = checkbox.parentElement.querySelector('.badge');
-        if (badge) {
-            badge.remove();
-        }
-    });
-
-    // Then process submitted questions
-    if (submittedQuestions) {
-        Object.entries(submittedQuestions).forEach(([key, data]) => {
-            const checkbox = document.querySelector(`input[value="${sanitizeKey(data.originalText || data)}"]`);
-            if (checkbox) {
-                checkbox.disabled = true;
-                checkbox.checked = true;
-
-                const listItem = checkbox.closest('li');
-                if (listItem) {
-                    listItem.classList.add('submitted');
-                }
-
-                if (!checkbox.parentElement.querySelector('.badge')) {
+        // İlgili checkbox'ı bul ve güncelle
+        const checkbox = document.querySelector(`input[value="${data.originalText}"]`);
+        if (checkbox) {
+            checkbox.disabled = true;
+            checkbox.checked = true;
+            
+            // Parent elementi güncelle
+            const parentLabel = checkbox.closest('label');
+            if (parentLabel) {
+                // "Gönderildi" badge'ini ekle
+                if (!parentLabel.querySelector('.badge')) {
                     const badge = document.createElement('span');
                     badge.className = 'badge bg-success';
                     badge.textContent = 'Gönderildi';
-                    checkbox.parentElement.appendChild(badge);
+                    parentLabel.appendChild(badge);
                 }
+                
+                // Submitted class'ını ekle
+                parentLabel.classList.add('submitted');
             }
-        });
-    }
+        }
+    });
 });
+
+
 
 // Form submission handler (Admin Only)
 document.getElementById('questionForm').addEventListener('submit', async function(e) {
