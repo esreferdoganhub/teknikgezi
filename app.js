@@ -219,9 +219,9 @@ window.login = async function() {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
     console.log('Login attempt with:', email); // Debug log
-
+    
     // Check for admin credentials
-    if (email === 'konuk' && password === '123456') {
+    if (email === 'öğrenci' && password === '123456') {
         document.body.classList.add('admin');
         console.log('Admin login successful');
         alert('Giriş başarılı!');
@@ -257,14 +257,16 @@ onAuthStateChanged(auth, (user) => {
         console.log('User is signed in:', user);
         document.body.classList.add('admin');
         document.getElementById('logoutBtn').style.display = 'inline-block';
-        // Checkboxları aktif et
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.disabled = false;
-        });
+        
+        // Refresh questions to show admin controls
+        fetchAndDisplayQuestions();
     } else {
         console.log('User is signed out');
         document.body.classList.remove('admin');
         document.getElementById('logoutBtn').style.display = 'none';
+        
+        // Refresh questions to hide admin controls
+        fetchAndDisplayQuestions();
     }
 });
 
@@ -284,9 +286,49 @@ function login() {
     }
 }
 
-// Optional: Clear credentials on page load for security
-window.onload = function() {
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-    document.body.classList.remove('admin');
+// Function to fetch and display questions
+function fetchAndDisplayQuestions() {
+    const questionsRef = collection(db, 'questions');
+    const questionList = document.getElementById('questionList');
+    const checkboxes = document.querySelectorAll('input[name="questions"]');
+    
+    // Show all questions by default
+    checkboxes.forEach(checkbox => {
+        checkbox.parentElement.style.display = 'block';
+    });
+    
+    // Make sure question form container is visible
+    document.getElementById('questionFormContainer').style.display = 'block';
 }
+
+// Function to automatically log in as student
+function autoLogin() {
+    // Check if already logged in via session storage
+    const isAdmin = sessionStorage.getItem('isAdmin');
+    
+    if (!isAdmin) {
+        // Set admin status in session storage
+        sessionStorage.setItem('isAdmin', 'true');
+    }
+
+    // Add admin class and ensure it persists
+    document.body.classList.add('admin');
+    
+    // Prevent any accidental class removal by using a timeout
+    setTimeout(() => {
+        if (!document.body.classList.contains('admin')) {
+            document.body.classList.add('admin');
+        }
+    }, 100);
+
+    // Fetch questions after ensuring admin state
+    fetchAndDisplayQuestions();
+    
+    console.log('Auto login completed');
+}
+
+// Call autoLogin when page loads
+window.onload = function() {
+    autoLogin();
+    fetchAndDisplayQuestions();
+};
