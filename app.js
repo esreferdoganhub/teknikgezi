@@ -220,6 +220,16 @@ window.login = async function() {
     const password = document.getElementById('passwordInput').value;
     console.log('Login attempt with:', email); // Debug log
 
+    // Check for admin credentials
+    if (email === 'konuk' && password === '123456') {
+        document.body.classList.add('admin');
+        console.log('Admin login successful');
+        alert('Giriş başarılı!');
+        document.getElementById('logoutBtn').style.display = 'inline-block';
+        // Additional admin-specific code can go here
+        return;
+    }
+
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('Login successful:', userCredential.user);
@@ -247,9 +257,36 @@ onAuthStateChanged(auth, (user) => {
         console.log('User is signed in:', user);
         document.body.classList.add('admin');
         document.getElementById('logoutBtn').style.display = 'inline-block';
+        // Checkboxları aktif et
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.disabled = false;
+        });
     } else {
         console.log('User is signed out');
         document.body.classList.remove('admin');
         document.getElementById('logoutBtn').style.display = 'none';
     }
 });
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('error-message');
+    
+    // Simple admin authentication
+    if (username === 'admin' && password === '123456') {
+        document.body.classList.add('admin');
+        errorMessage.textContent = '';
+        document.querySelector('.login-form').style.display = 'none';
+    } else {
+        errorMessage.textContent = 'Invalid username or password';
+        document.body.classList.remove('admin');
+    }
+}
+
+// Optional: Clear credentials on page load for security
+window.onload = function() {
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.body.classList.remove('admin');
+}

@@ -77,10 +77,30 @@ button:hover {
 }
 
 .admin-controls {
-    /* Admin specific styles */
+    display: none; /* Hidden by default */
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
 }
 
 .admin .admin-controls {
+    display: block; /* Show when admin class is present */
+}
+
+.submit-controls {
+    display: none; /* Varsayılan olarak gizli */
+}
+
+.admin .submit-controls {
+    display: block; /* Admin girişi yapıldığında görünür */
+}
+
+#questionForm button[type="submit"] {
+    display: none;
+}
+
+.admin #questionForm button[type="submit"] {
     display: block;
 }
 
@@ -156,4 +176,37 @@ button:hover {
     #submittedQuestionsContainer {
         padding: 15px;
     }
-};
+}
+
+/* Login Form Styles */
+.login-form {
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
